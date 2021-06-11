@@ -10,7 +10,7 @@ gem "rspec", "~> 3.0"
 gem 'httparty'
 
 # https://github.com/ory/sdk/tree/master/clients/kratos/ruby
-gem 'ory-kratos-client', '~> v0.6.3-alpha.1'
+gem 'ory-kratos-client'
 
 group :development, :test do
     gem 'pry', '~> 0.13.1'

@@ -7,7 +7,7 @@ module FerreriKratosSdk
             include HTTParty
 
             # TODO: get from ENV or initialize it on contructor?
-            base_uri "http://0.0.0.0:4434"
+            base_uri "http://0.0.0.0:4433"
 
             class HTTPRequestError < StandardError; end
 
@@ -52,24 +52,34 @@ module FerreriKratosSdk
 
             # Source: https://www.ory.sh/kratos/docs/self-service/flows/user-registration/#api-clients
             # For API Clients, Ory Kratos responds with a JSON payload which includes the signed up identity:
-            # Payload: { schema_id: 'default', "password": "foo_bar_123", traits: { 'email' => 'teste17@gmail.com' }}
+            # Payload: { schema_id: 'default', "password": "foo_bar_123", traits: { 'email' => 'teste18@gmail.com' }}
             def register(payload)
 
                 # TODO: Get the flow ID from the api client
-                response_flow = registration_api
+                response_flow = get_registration_api
+
+                binding.pry
                 
                 # TODO: Check errors
                 raise_exception response_flow unless response_flow.code == 200
+
+                binding.pry
 
                 # TODO: Get the flow id
                 # the id is the same on the parameter ?flow_id='' on json['ui']['action']
                 flow_id = json_response(response_flow.body)[:id]
 
+                binding.pry
+
                 # TODO: With the flow ID we can POST data
-                response_registration = post_registration_api payload flow_id
+                response_registration = post_registration_api(payload, flow_id)
+
+                binding.pry
                 
                 # TODO: Check errors
                 raise_exception response_registration unless response_registration.code == 200
+
+                binding.pry
 
                 # TODO: Change for the output::as_json::json_response
                 json_response response_registration.body
@@ -146,19 +156,23 @@ module FerreriKratosSdk
             # }
             # Payload: { schema_id: 'default', password: 'abcedarium', traits: { 'email' => 'teste17@gmail.com' }}
             def post_registration_api(payload, flow_id)
+                body = {'method': 'password'}.merge!(payload)
+
                 options = { 
                     headers: { 'Content-type' => 'application/json' }.merge!(@default_options[:headers]),
-                    query: { 'flow_id' => flow_id },
+                    query: { 'flow' => flow_id },
                     body: body.to_json 
                 }
 
                 # TODO: Call the request
-                response = self.class.post('/self-service/registration/api', options)
+                response = self.class.post('/self-service/registration', options)
+
+                binding.pry
 
                 # TODO: Raise an expection here or let the register method dispatch it
 
                 # TODO: Return the response
-                reponse
+                response
             end
 
             # Source: https://www.ory.sh/kratos/docs/self-service/flows/user-login#api-clients

@@ -7,13 +7,11 @@ module FerreriKratosSdk
                 # - FerreriKratosSdk::Clients::ClientOry
                 @client = client
             end
-
             
-            def create_identity(body)
-                @client.create_identity(body)
+            def login(body)
+                @client.login(body)
             end
 
-            
             def register(body)
                 # TODO: Raise exceptions
                 begin
